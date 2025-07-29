@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מסעדת הזיה - מסעדה כשרה יוקרתית</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-black: #020B13;
+            --secondary-black: #262626;
+            --gold-primary: #DAAB2D;
+            --gold-secondary: #B16C04;
+            --coffee-black: #3B3130;
+            --cream-light: #F8F5F0;
+            --white-off: #FEFEFE;
+            --gold-light: #FDF5A6;
+            --success-green: #27ae60;
+            --warning-orange: #f39c12;
+            --danger-red: #e74c3c;
+            --info-blue: #3498db;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-black);
+            color: var(--white-off);
+            line-height: 1.6;
+            direction: rtl;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-black) 100%);
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(218, 171, 45, 0.3);
+            border-bottom: 2px solid var(--gold-primary);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--gold-primary);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--gold-primary);
+            color: var(--primary-black);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gold-secondary);
+            transform: translateY(-2px);
+        }
+
+        .cart-btn {
+            position: relative;
+            background: var(--danger-red);
+            color: white;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: var(--gold-primary);
+            color: var(--primary-black);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .main-container {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(2, 11, 19, 0.8), rgba(38, 38, 38, 0.8)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23262626" width="1200" height="600"/><circle fill="%23DAAB2D" cx="200" cy="150" r="3" opacity="0.6"/><circle fill="%23DAAB2D" cx="800" cy="250" r="2" opacity="0.4"/></svg>');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--gold-primary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--cream-light);
+        }
+
+        .kosher-badge {
+            display: inline-block;
+            background: var(--gold-primary);
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        /* Menu Section */
+        .menu-section {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--gold-primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: var(--gold-primary);
+            margin: 1rem auto;
+        }
+
+        .menu-categories {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: transparent;
+            color: var(--white-off);
+            border: 2px solid var(--gold-primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--gold-primary);
+            color: var(--primary-black);
+            transform: translateY(-2px);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .menu-item {
+            background: var(--secondary-black);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold-primary);
+            box-shadow: 0 10px 30px rgba(218, 171, 45, 0.2);
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item h3 {
+            font-size: 1.3rem;
+            color: var(--gold-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--gold-secondary);
+        }
+
+        .menu-item p {
+            color: var(--cream-light);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .add-to-cart-btn {
+            background: var(--gold-primary);
+            color: var(--primary-black);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--gold-secondary);
+            transform: translateY(-2px);
+        }
+
+        .add-to-cart-btn:disabled {
+            background: var(--coffee-black);
+            color: var(--cream-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Cart Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--secondary-black);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid var(--gold-primary);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--gold-primary);
+            padding-bottom: 1rem;
+        }
+
+        .modal-title {
+            color: var(--gold-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--white-off);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--gold-primary);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--coffee-black);
+        }
+
+        .cart-item-info h4 {
+            color: var(--gold-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-btn {
+            background: var(--gold-primary);
+            color: var(--primary-black);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .quantity-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: var(--danger-red);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .cart-total {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 1.5rem;
+            color: var(--gold-primary);
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(45deg, var(--gold-primary), var(--gold-secondary));
+            color: var(--primary-black);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Order Form */
+        .order-form {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gold-primary);
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--coffee-black);
+            border-radius: 8px;
+            background: var(--primary-black);
+            color: var(--white-off);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            padding: 2rem;
+            background: var(--primary-black);
+            min-height: calc(100vh - 80px);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gold-primary);
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .admin-nav button {
+            background: var(--coffee-black);
+            color: var(--white-off);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .admin-nav button:hover,
+        .admin-nav button.active {
+            background: var(--gold-primary);
+            color: var(--primary-black);
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--secondary-black), var(--coffee-black));
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--gold-primary);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(218, 171, 45, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--gold-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--cream-light);
+            font-size: 1rem;
+        }
+
+        .orders-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background: var(--secondary-black);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            border-color: var(--gold-primary);
+            transform: translateY(-3px);
+        }
+
+        .order-card.new {
+            border-color: var(--success-green);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); }
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .order-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--gold-primary);
+        }
+
+        .order-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .status-new { background: var(--success-green); color: white; }
+        .status-preparing { background: var(--warning-orange); color: white; }
+        .status-ready { background: var(--info-blue); color: white; }
+        .status-delivered { background: var(--coffee-black); color: var(--cream-light); }
+
+        .customer-info {
+            margin: 1rem 0;
+        }
+
+        .customer-name {
+            font-weight: bold;
+            color: var(--gold-light);
+            margin-bottom: 0.3rem;
+        }
+
+        .order-items {
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .order-total {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--gold-primary);
+            border-top: 1px solid var(--coffee-black);
+            padding-top: 0.5rem;
+        }
+
+        .action-btn {
+            background: var(--gold-primary);
+            color: var(--primary-black);
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-success { background: var(--success-green); color: white; }
+        .btn-warning { background: var(--warning-orange); color: white; }
+        .btn-danger { background: var(--danger-red); color: white; }
+        .btn-info { background: var(--info-blue); color: white; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .orders-list {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-nav {
+                gap: 0.5rem;
+            }
+
+            .admin-nav button {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Login Form */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 80px);
+            padding: 2rem;
+        }
+
+        .login-form {
+            background: var(--secondary-black);
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid var(--gold-primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .login-title {
+            color: var(--gold-primary);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--secondary-black);
+            color: var(--white-off);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            border: 2px solid var(--gold-primary);
+            z-index: 3000;
+            max-width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { border-color: var(--success-green); }
+        .notification.error { border-color: var(--danger-red); }
+        .notification.warning { border-color: var(--warning-orange); }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--cream-light);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--gold-primary);
+            margin-bottom: 1rem;
+            opacity: 0.6;
+        }
+
+        .empty-state-text {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-subtext {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+    <div class="nav-container">
+        <div class="logo" onclick="showHome()">🍽️ מסעדת הזיה</div>
+        <div class="nav-menu">
+            <button class="nav-btn" onclick="showHome()">🏠 בית</button>
+            <button class="nav-btn" onclick="scrollToMenu()">🍽️ תפריט</button>
+            <button class="nav-btn cart-btn" onclick="toggleCart()">
+                🛒 עגלה
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+            <button class="nav-btn" onclick="showAdminLogin(); console.log('לחץ על ניהול');">⚙️ ניהול</button>
+        </div>
+    </div>
+</header>
+
+<!-- Main App - Customer View -->
+<div id="customerApp" class="main-container">
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>מסעדת הזיה</h1>
+        <p>חוויה קולינרית כשרה יוקרתית במיטב המסורת הישראלית</p>
+        <div class="kosher-badge">כשר למהדרין | בד"ץ העדה החרדית</div>
+        <p style="margin-top: 1rem; font-size: 1rem;">המבורגרים, שניצלונים וסלטים במחירים משתלמים</p>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu-section" id="menuSection">
+        <h2 class="section-title">התפריט שלנו</h2>
+
+        <div class="menu-categories">
+            <button class="category-btn active" onclick="filterMenu('all')">הכל</button>
+            <button class="category-btn" onclick="filterMenu('המבורגרים')">🍔 המבורגרים</button>
+            <button class="category-btn" onclick="filterMenu('שניצלונים')">🍗 שניצלונים</button>
+            <button class="category-btn" onclick="filterMenu('סלטים')">🥗 סלטים</button>
+            <button class="category-btn" onclick="filterMenu('משקאות')">🥤 משקאות</button>
+        </div>
+
+        <div class="menu-grid" id="menuGrid">
+            <!-- Menu items will be populated by JavaScript -->
+        </div>
+    </section>
+</div>
+
+<!-- Admin Login -->
+<div id="adminLogin" style="display: none;">
+    <div class="login-container">
+        <div class="login-form">
+            <h1 class="login-title">🔐 כניסת מנהל</h1>
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label>שם משתמש:</label>
+                    <input type="text" id="adminUsername" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <label>סיסמה:</label>
+                    <input type="password" id="adminPassword" value="hazya2024" required>
+                </div>
+                <button type="submit" class="checkout-btn">🔓 התחבר</button>
+                <button type="button" class="checkout-btn" onclick="quickAdminLogin()" style="margin-top: 0.5rem; background: var(--success-green);">⚡ התחברות מהירה</button>
+            </form>
+            <button class="nav-btn" onclick="showHome()" style="margin-top: 1rem;">🏠 חזור לאתר</button>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--cream-light);">
+                שם משתמש: <strong>admin</strong><br>
+                סיסמה: <strong>hazya2024</strong><br>
+                <span style="color: var(--gold-primary);">💡 הפרטים כבר מולאו עבורך</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel" class="admin-panel">
+    <div class="admin-header">
+        <h1 style="color: var(--gold-primary);">⚡ פאנל ניהול מסעדת הזיה</h1>
+        <button class="action-btn btn-danger" onclick="logoutAdmin()">🚪 התנתק</button>
+    </div>
+
+    <div class="admin-nav">
+        <button class="active" onclick="showAdminSection('dashboard')">📊 דשבורד</button>
+        <button onclick="showAdminSection('orders')">📋 הזמנות</button>
+        <button onclick="showAdminSection('menu')">🍽️ תפריט</button>
+        <button onclick="showAdminSection('customers')">👥 לקוחות</button>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="admin-section active">
+        <h2 style="color: var(--gold-primary); margin-bottom: 2rem;">📊 דשבורד ראשי</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                <div class="stat-value" id="totalOrdersToday">0</div>
+                <div class="stat-label">הזמנות היום</div>
+            </div>
+
+            <div class="stat-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+                <div class="stat-value" id="todayRevenue">₪0</div>
+                <div class="stat-label">הכנסות היום</div>
+            </div>
+
+            <div class="stat-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🆕</div>
+                <div class="stat-value" id="newOrdersCount">0</div>
+                <div class="stat-label">הזמנות חדשות</div>
+            </div>
+
+            <div class="stat-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                <div class="stat-value" id="totalCustomers">0</div>
+                <div class="stat-label">לקוחות רשומים</div>
+            </div>
+        </div>
+
+        <div style="background: var(--secondary-black); padding: 2rem; border-radius: 15px;">
+            <h3 style="color: var(--gold-primary); margin-bottom: 1rem;">🚀 הזמנות אחרונות</h3>
+            <div id="recentOrdersList">
+                <!-- Recent orders will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Management -->
+    <div id="orders" class="admin-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 style="color: var(--gold-primary);">📋 ניהול הזמנות</h2>
+            <button class="action-btn btn-success" onclick="addTestOrder()">➕ הזמנת בדיקה</button>
+        </div>
+
+        <div id="ordersList" class="orders-list">
+            <!-- Orders will be populated here -->
+        </div>
+    </div>
+
+    <!-- Menu Management -->
+    <div id="menuAdmin" class="admin-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 style="color: var(--gold-primary);">🍽️ ניהול תפריט</h2>
+            <button class="action-btn btn-success" onclick="showAddItemForm()">➕ פריט חדש</button>
+        </div>
+
+        <div id="adminMenuGrid" class="menu-grid">
+            <!-- Admin menu items will be populated here -->
+        </div>
+    </div>
+
+    <!-- Customers Management -->
+    <div id="customersAdmin" class="admin-section">
+        <h2 style="color: var(--gold-primary); margin-bottom: 2rem;">👥 ניהול לקוחות</h2>
+
+        <div id="customersList">
+            <!-- Customers will be populated here -->
+        </div>
+    </div>
+</div>
+
+<!-- Cart Modal -->
+<div id="cartModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">🛒 עגלת הקניות</h2>
+            <button class="close-btn" onclick="toggleCart()">&times;</button>
+        </div>
+        <div id="cartItems">
+            <!-- Cart items will be populated here -->
+        </div>
+        <div class="cart-total" id="cartTotal">סה"כ: ₪0</div>
+        <div id="cartActions">
+            <button class="checkout-btn" onclick="showCheckout()">המשך לתשלום</button>
+        </div>
+
+        <!-- Order Form -->
+        <div id="orderForm" class="order-form">
+            <h3 style="color: var(--gold-primary); margin-bottom: 1rem;">📝 פרטי הזמנה</h3>
+            <form onsubmit="return submitOrder(event)">
+                <div class="form-group">
+                    <label>שם מלא:</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>טלפון:</label>
+                    <input type="tel" id="customerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>כתובת:</label>
+                    <input type="text" id="customerAddress" required>
+                </div>
+                <div class="form-group">
+                    <label>הערות:</label>
+                    <textarea id="orderNotes" rows="3" placeholder="הערות מיוחדות להזמנה..."></textarea>
+                </div>
+                <button type="submit" class="checkout-btn">✅ בצע הזמנה</button>
+                <button type="button" class="nav-btn" onclick="backToCart()" style="width: 100%; margin-top: 0.5rem;">🔙 חזור לעגלה</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global variables
+    let menuItems = [
+        {
+            id: 1,
+            name: "המבורגר הזיה קלאסי",
+            description: "המבורגר בקר איכותי 200 גרם עם ירקות טריים, חסה, עגבנייה וסלט בבריושי בית",
+            price: 45,
+            category: "המבורגרים",
+            available: true,
+            image: "🍔"
+        },
+        {
+            id: 2,
+            name: "המבורגר BBQ מיוחד",
+            description: "המבורגר בקר עם רוטב BBQ בית, בצל מטוגן, פיקלס ורוטב שום מיוחד",
+            price: 52,
+            category: "המבורגרים",
+            available: true,
+            image: "🍔"
+        },
+        {
+            id: 3,
+            name: "שניצל ביסטרו",
+            description: "שניצל עוף רך ועסיסי 180 גרם עם תיבול מיוחד, סלט ירוק ותוספות חמות",
+            price: 38,
+            category: "שניצלונים",
+            available: true,
+            image: "🍗"
+        },
+        {
+            id: 4,
+            name: "שניצל פרמזן",
+            description: "שניצל עוף עם גבינת פרמזן איטלקית, רוטב עגבניות בית וריחן טרי",
+            price: 42,
+            category: "שניצלונים",
+            available: true,
+            image: "🍗"
+        },
+        {
+            id: 5,
+            name: "סלט קיסר הזיה",
+            description: "עלי חסה פריכים, קרוטונים ביתיים, גבינת פרמזן ורוטב קיסר מיוחד",
+            price: 32,
+            category: "סלטים",
+            available: true,
+            image: "🥗"
+        },
+        {
+            id: 6,
+            name: "סלט יווני כפרי",
+            description: "עגבניות דובדבנים, מלפפונים, בצל סגול, זיתים שחורים וגבינת פטה",
+            price: 28,
+            category: "סלטים",
+            available: true,
+            image: "🥗"
+        },
+        {
+            id: 7,
+            name: "לימונדה בית טרייה",
+            description: "לימונדה טבעית מתוקה עם נענע טרי, לימון סחוט ומעט סודה",
+            price: 18,
+            category: "משקאות",
+            available: true,
+            image: "🍋"
+        },
+        {
+            id: 8,
+            name: "קפה טורקי מסורתי",
+            description: "קפה טורקי מסורתי חזק עם קצפת עדינה וקורטוב של קינמון",
+            price: 14,
+            category: "משקאות",
+            available: true,
+            image: "☕"
+        }
+    ];
+
+    let cart = [];
+    let orders = [];
+    let customers = [];
+    let currentFilter = 'all';
+    let isAdminLoggedIn = false;
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🍽️ מאתחל מסעדת הזיה...');
+        loadData();
+        renderMenu();
+        updateCartDisplay();
+        generateSampleOrders();
+
+        // הוסף event listener לטופס האדמין
+        const adminForm = document.querySelector('#adminLogin form');
+        if (adminForm) {
+            adminForm.addEventListener('submit', handleAdminLogin);
+            console.log('✅ Event listener לטופס אדמין נוסף');
+        }
+
+        console.log('✅ האפליקציה אותחלה בהצלחה');
+
+        // בדיקה שהפונקציות קיימות
+        console.log('בדיקת פונקציות:');
+        console.log('handleAdminLogin:', typeof handleAdminLogin);
+        console.log('quickAdminLogin:', typeof quickAdminLogin);
+        console.log('showAdminLogin:', typeof showAdminLogin);
+
+        // הוסף פונקציה גלובלית לדיבוג
+        window.debugLogin = function() {
+            console.log('🐛 DEBUG: התחברות ישירה לאדמין...');
+            quickAdminLogin();
+        };
+
+        console.log('💡 לדיבוג: הקלד debugLogin() בקונסול להתחברות ישירה');
+    });
+
+    // Load data from localStorage
+    function loadData() {
+        const savedCart = localStorage.getItem('hazya_cart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+        }
+
+        const savedOrders = localStorage.getItem('hazya_orders');
+        if (savedOrders) {
+            orders = JSON.parse(savedOrders);
+            // Convert string dates back to Date objects
+            orders.forEach(order => {
+                if (typeof order.time === 'string') {
+                    order.time = new Date(order.time);
+                }
+            });
+        }
+
+        const savedCustomers = localStorage.getItem('hazya_customers');
+        if (savedCustomers) {
+            customers = JSON.parse(savedCustomers);
+        }
+    }
+
+    // Save data to localStorage
+    function saveData() {
+        localStorage.setItem('hazya_cart', JSON.stringify(cart));
+        localStorage.setItem('hazya_orders', JSON.stringify(orders));
+        localStorage.setItem('hazya_customers', JSON.stringify(customers));
+    }
+
+    // Navigation functions
+    function showHome() {
+        document.getElementById('customerApp').style.display = 'block';
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'none';
+        isAdminLoggedIn = false;
+    }
+
+    function scrollToMenu() {
+        document.getElementById('menuSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showAdminLogin() {
+        console.log('🔐 פותח מסך התחברות אדמין...');
+        document.getElementById('customerApp').style.display = 'none';
+        document.getElementById('adminLogin').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'none';
+        console.log('✅ מסך התחברות אדמין פתוח');
+    }
+
+    // Admin login
+    function handleAdminLogin(event) {
+        event.preventDefault();
+        console.log('מנסה להתחבר...');
+
+        const username = document.getElementById('adminUsername').value;
+        const password = document.getElementById('adminPassword').value;
+
+        console.log('שם משתמש:', username, 'סיסמה:', password);
+
+        if (username === 'admin' && password === 'hazya2024') {
+            console.log('פרטים נכונים, מתחבר...');
+            isAdminLoggedIn = true;
+            document.getElementById('customerApp').style.display = 'none';
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+
+            updateDashboard();
+            renderAdminOrders();
+            renderAdminMenu();
+            renderAdminCustomers();
+
+            showNotification('התחברת בהצלחה לפאנל הניהול!', 'success');
+        } else {
+            console.log('פרטים שגויים');
+            showNotification('שם משתמש או סיסמה שגויים', 'error');
+        }
+
+        return false;
+    }
+
+    // פונקציה נוספת לבדיקה מהירה
+    function quickAdminLogin() {
+        console.log('התחברות מהירה...');
+        isAdminLoggedIn = true;
+        document.getElementById('customerApp').style.display = 'none';
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+
+        updateDashboard();
+        renderAdminOrders();
+        renderAdminMenu();
+        renderAdminCustomers();
+
+        showNotification('התחברת בהצלחה לפאנל הניהול!', 'success');
+    }
+
+    function logoutAdmin() {
+        if (confirm('האם אתה בטוח שברצונך להתנתק?')) {
+            isAdminLoggedIn = false;
+            showHome();
+            showNotification('התנתקת מפאנל הניהול', 'warning');
+        }
+    }
+
+    // Menu functions
+    function renderMenu() {
+        const menuGrid = document.getElementById('menuGrid');
+        let filteredItems = currentFilter === 'all' ? menuItems : menuItems.filter(item => item.category === currentFilter);
+
+        menuGrid.innerHTML = filteredItems.map(item => `
+            <div class="menu-item">
+                <div class="menu-item-header">
+                    <div>
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">${item.image}</div>
+                        <h3>${item.name}</h3>
+                        <div class="kosher-badge" style="font-size: 0.8rem; padding: 0.2rem 0.5rem;">כשר למהדרין</div>
+                    </div>
+                    <div class="menu-item-price">₪${item.price}</div>
+                </div>
+                <p>${item.description}</p>
+                <button class="add-to-cart-btn" onclick="addToCart(${item.id})" ${!item.available ? 'disabled' : ''}>
+                    ${item.available ? '➕ הוסף לעגלה' : '❌ לא זמין'}
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function filterMenu(category) {
+        currentFilter = category;
+
+        // Update active button
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        renderMenu();
+    }
+
+    // Cart functions
+    function addToCart(itemId) {
+        const item = menuItems.find(item => item.id === itemId);
+        if (!item || !item.available) return;
+
+        const existingItem = cart.find(cartItem => cartItem.id === itemId);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({...item, quantity: 1});
+        }
+
+        updateCartDisplay();
+        saveData();
+
+        // Show feedback
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = '✅ נוסף לעגלה!';
+        btn.style.background = '#27ae60';
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+        }, 1000);
+    }
+
+    function updateCartDisplay() {
+        const cartCount = document.getElementById('cartCount');
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+        cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+
+    function toggleCart() {
+        const modal = document.getElementById('cartModal');
+        const isVisible = modal.classList.contains('show');
+
+        if (isVisible) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        } else {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+            renderCart();
+        }
+    }
+
+    function renderCart() {
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🛒</div>
+                    <div class="empty-state-text">העגלה ריקה</div>
+                    <div class="empty-state-subtext">הוסף פריטים מהתפריט כדי להתחיל</div>
+                </div>
+            `;
+            cartTotal.textContent = 'סה"כ: ₪0';
+            document.getElementById('cartActions').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('cartActions').style.display = 'block';
+
+        cartItems.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <h4>${item.name}</h4>
+                    <p>₪${item.price} × ${item.quantity} = ₪${(item.price * item.quantity).toFixed(2)}</p>
+                </div>
+                <div class="cart-controls">
+                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                    <span class="quantity-display">${item.quantity}</span>
+                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                    <button class="remove-btn" onclick="removeFromCart(${item.id})">הסר</button>
+                </div>
+            </div>
+        `).join('');
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cartTotal.textContent = `סה"כ: ₪${total.toFixed(2)}`;
+    }
+
+    function updateQuantity(itemId, change) {
+        const item = cart.find(cartItem => cartItem.id === itemId);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                removeFromCart(itemId);
+            } else {
+                renderCart();
+                updateCartDisplay();
+                saveData();
+            }
+        }
+    }
+
+    function removeFromCart(itemId) {
+        cart = cart.filter(item => item.id !== itemId);
+        renderCart();
+        updateCartDisplay();
+        saveData();
+    }
+
+    function showCheckout() {
+        document.getElementById('cartItems').style.display = 'none';
+        document.getElementById('cartActions').style.display = 'none';
+        document.getElementById('orderForm').style.display = 'block';
+    }
+
+    function backToCart() {
+        document.getElementById('cartItems').style.display = 'block';
+        document.getElementById('cartActions').style.display = 'block';
+        document.getElementById('orderForm').style.display = 'none';
+    }
+
+    function submitOrder(event) {
+        event.preventDefault();
+
+        const customerName = document.getElementById('customerName').value;
+        const customerPhone = document.getElementById('customerPhone').value;
+        const customerAddress = document.getElementById('customerAddress').value;
+        const orderNotes = document.getElementById('orderNotes').value;
+
+        const order = {
+            id: `HZ${Date.now().toString().slice(-6)}`,
+            customerName: customerName,
+            customerPhone: customerPhone,
+            customerAddress: customerAddress,
+            items: [...cart],
+            total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+            notes: orderNotes,
+            time: new Date(),
+            status: 'new'
+        };
+
+        orders.unshift(order);
+
+        // Add or update customer
+        const existingCustomer = customers.find(c => c.phone === customerPhone);
+        if (existingCustomer) {
+            existingCustomer.totalOrders++;
+            existingCustomer.totalSpent += order.total;
+        } else {
+            customers.push({
+                id: Date.now(),
+                name: customerName,
+                phone: customerPhone,
+                address: customerAddress,
+                joinDate: new Date().toISOString().split('T')[0],
+                totalOrders: 1,
+                totalSpent: order.total
+            });
+        }
+
+        // Clear cart
+        cart = [];
+        updateCartDisplay();
+        saveData();
+
+        // Show success message
+        showNotification(`ההזמנה #${order.id} נשלחה בהצלחה! זמן הכנה משוער: 25-30 דקות`, 'success');
+        toggleCart();
+
+        // Clear form
+        document.getElementById('customerName').value = '';
+        document.getElementById('customerPhone').value = '';
+        document.getElementById('customerAddress').value = '';
+        document.getElementById('orderNotes').value = '';
+
+        return false;
+    }
+
+    // Admin functions
+    function showAdminSection(section) {
+        // Hide all admin sections
+        document.querySelectorAll('.admin-section').forEach(sec => {
+            sec.classList.remove('active');
+        });
+
+        // Update nav buttons
+        document.querySelectorAll('.admin-nav button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show selected section
+        document.getElementById(section === 'menu' ? 'menuAdmin' : section === 'customers' ? 'customersAdmin' : section).classList.add('active');
+        event.target.classList.add('active');
+
+        // Load section data
+        switch(section) {
+            case 'dashboard':
+                updateDashboard();
+                break;
+            case 'orders':
+                renderAdminOrders();
+                break;
+            case 'menu':
+                renderAdminMenu();
+                break;
+            case 'customers':
+                renderAdminCustomers();
+                break;
+        }
+    }
+
+    function updateDashboard() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Today's orders
+        const todayOrders = orders.filter(order => {
+            const orderDate = new Date(order.time);
+            orderDate.setHours(0, 0, 0, 0);
+            return orderDate.getTime() === today.getTime();
+        });
+
+        const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total, 0);
+        const newOrders = orders.filter(order => order.status === 'new');
+
+        document.getElementById('totalOrdersToday').textContent = todayOrders.length;
+        document.getElementById('todayRevenue').textContent = `₪${todayRevenue}`;
+        document.getElementById('newOrdersCount').textContent = newOrders.length;
+        document.getElementById('totalCustomers').textContent = customers.length;
+
+        renderRecentOrders();
+    }
+
+    function renderRecentOrders() {
+        const recentOrdersList = document.getElementById('recentOrdersList');
+        const recentOrders = orders.slice(0, 5);
+
+        if (recentOrders.length === 0) {
+            recentOrdersList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <div class="empty-state-text">אין הזמנות עדיין</div>
+                </div>
+            `;
+            return;
+        }
+
+        recentOrdersList.innerHTML = recentOrders.map(order => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--coffee-black); border-radius: 10px; margin-bottom: 1rem;">
+                <div>
+                    <strong>#${order.id}</strong> - ${order.customerName}
+                    <div style="color: var(--cream-light); font-size: 0.9rem;">${formatTime(order.time)}</div>
+                </div>
+                <div>
+                    <span class="order-status status-${order.status}">${getStatusText(order.status)}</span>
+                    <div style="color: var(--gold-primary); font-weight: bold; margin-top: 0.3rem;">₪${order.total}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderAdminOrders() {
+        const ordersList = document.getElementById('ordersList');
+
+        if (orders.length === 0) {
+            ordersList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <div class="empty-state-text">אין הזמנות עדיין</div>
+                    <div class="empty-state-subtext">הזמנות חדשות יופיעו כאן</div>
+                </div>
+            `;
+            return;
+        }
+
+        ordersList.innerHTML = orders.map(order => `
+            <div class="order-card ${order.status === 'new' ? 'new' : ''}">
+                <div class="order-header">
+                    <div class="order-number">#${order.id}</div>
+                    <div class="order-status status-${order.status}">${getStatusText(order.status)}</div>
+                </div>
+
+                <div class="customer-info">
+                    <div class="customer-name">👤 ${order.customerName}</div>
+                    <div style="color: var(--cream-light); margin-top: 0.3rem;">📞 ${order.customerPhone}</div>
+                    <div style="color: var(--cream-light); margin-top: 0.3rem;">🏠 ${order.customerAddress}</div>
+                    <div style="color: var(--cream-light); margin-top: 0.3rem;">🕒 ${formatDateTime(order.time)}</div>
+                </div>
+
+                <div class="order-items">
+                    ${order.items.map(item => `
+                        <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--coffee-black);">
+                            <span>${item.name}</span>
+                            <span>×${item.quantity}</span>
+                            <span style="color: var(--gold-primary); font-weight: bold;">₪${item.price * item.quantity}</span>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="order-total">סה"כ: ₪${order.total}</div>
+
+                ${order.notes ? `<div style="margin-top: 0.5rem; font-style: italic; color: var(--cream-light);">📝 ${order.notes}</div>` : ''}
+
+                <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+                    ${getOrderActionButtons(order)}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function getOrderActionButtons(order) {
+        switch(order.status) {
+            case 'new':
+                return `
+                    <button class="action-btn btn-success" onclick="updateOrderStatus('${order.id}', 'preparing')">✅ אשר</button>
+                    <button class="action-btn btn-danger" onclick="cancelOrder('${order.id}')">❌ בטל</button>
+                `;
+            case 'preparing':
+                return `<button class="action-btn btn-info" onclick="updateOrderStatus('${order.id}', 'ready')">🍽️ מוכן</button>`;
+            case 'ready':
+                return `<button class="action-btn btn-success" onclick="updateOrderStatus('${order.id}', 'delivered')">🚚 נשלח</button>`;
+            case 'delivered':
+                return `<span style="color: var(--success-green); font-weight: bold;">✅ הושלם</span>`;
+            default:
+                return '';
+        }
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+        const order = orders.find(o => o.id === orderId);
+        if (order) {
+            order.status = newStatus;
+            saveData();
+            renderAdminOrders();
+            updateDashboard();
+            showNotification(`הזמנה #${orderId} עודכנה ל: ${getStatusText(newStatus)}`, 'success');
+        }
+    }
+
+    function cancelOrder(orderId) {
+        if (confirm(`האם אתה בטוח שברצונך לבטל את הזמנה #${orderId}?`)) {
+            orders = orders.filter(o => o.id !== orderId);
+            saveData();
+            renderAdminOrders();
+            updateDashboard();
+            showNotification(`הזמנה #${orderId} בוטלה`, 'warning');
+        }
+    }
+
+    function addTestOrder() {
+        const testOrder = {
+            id: `HZ${Date.now().toString().slice(-6)}`,
+            customerName: 'לקוח בדיקה',
+            customerPhone: '050-1234567',
+            customerAddress: 'כתובת בדיקה 123',
+            items: [
+                { name: 'המבורגר הזיה קלאסי', price: 45, quantity: 1 }
+            ],
+            total: 45,
+            notes: 'הזמנת בדיקה',
+            time: new Date(),
+            status: 'new'
+        };
+
+        orders.unshift(testOrder);
+        saveData();
+        renderAdminOrders();
+        updateDashboard();
+        showNotification('הזמנת בדיקה נוספה!', 'success');
+    }
+
+    function renderAdminMenu() {
+        const adminMenuGrid = document.getElementById('adminMenuGrid');
+
+        adminMenuGrid.innerHTML = menuItems.map(item => `
+            <div class="menu-item" style="border: 2px solid ${item.available ? 'var(--success-green)' : 'var(--danger-red)'};">
+                <div class="menu-item-header">
+                    <div>
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">${item.image}</div>
+                        <h3>${item.name}</h3>
+                        <div style="color: var(--cream-light); font-size: 0.9rem; margin-bottom: 0.5rem;">${item.category}</div>
+                    </div>
+                    <div class="menu-item-price">₪${item.price}</div>
+                </div>
+                <p>${item.description}</p>
+
+                <div style="margin: 1rem 0;">
+                    <span style="padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold; ${item.available ? 'background: var(--success-green); color: white;' : 'background: var(--danger-red); color: white;'}">
+                        ${item.available ? '✅ זמין' : '❌ לא זמין'}
+                    </span>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button class="action-btn ${item.available ? 'btn-warning' : 'btn-success'}" onclick="toggleItemAvailability(${item.id})">
+                        ${item.available ? '🔒 הסתר' : '🔓 הצג'}
+                    </button>
+                    <button class="action-btn" onclick="editItem(${item.id})">✏️ ערוך</button>
+                    <button class="action-btn btn-danger" onclick="deleteItem(${item.id})">🗑️ מחק</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function toggleItemAvailability(itemId) {
+        const item = menuItems.find(i => i.id === itemId);
+        if (item) {
+            item.available = !item.available;
+            renderMenu();
+            renderAdminMenu();
+            saveData();
+            showNotification(`${item.name} ${item.available ? 'זמין' : 'לא זמין'} עכשיו`, 'info');
+        }
+    }
+
+    function editItem(itemId) {
+        const item = menuItems.find(i => i.id === itemId);
+        if (!item) return;
+
+        const newName = prompt('שם הפריט:', item.name);
+        if (newName !== null && newName.trim()) item.name = newName.trim();
+
+        const newDescription = prompt('תיאור:', item.description);
+        if (newDescription !== null) item.description = newDescription;
+
+        const newPriceStr = prompt('מחיר:', item.price);
+        if (newPriceStr !== null) {
+            const newPrice = parseFloat(newPriceStr);
+            if (!isNaN(newPrice) && newPrice > 0) {
+                item.price = newPrice;
+            }
+        }
+
+        renderMenu();
+        renderAdminMenu();
+        saveData();
+        showNotification('הפריט עודכן בהצלחה!', 'success');
+    }
+
+    function deleteItem(itemId) {
+        const item = menuItems.find(i => i.id === itemId);
+        if (item && confirm(`האם אתה בטוח שברצונך למחוק את "${item.name}"?`)) {
+            menuItems = menuItems.filter(i => i.id !== itemId);
+            renderMenu();
+            renderAdminMenu();
+            saveData();
+            showNotification('הפריט נמחק מהתפריט', 'warning');
+        }
+    }
+
+    function showAddItemForm() {
+        const name = prompt('שם הפריט החדש:');
+        if (!name) return;
+
+        const description = prompt('תיאור הפריט:');
+        const priceStr = prompt('מחיר (₪):');
+        const price = parseFloat(priceStr);
+
+        if (isNaN(price) || price <= 0) {
+            showNotification('מחיר לא תקין', 'error');
+            return;
+        }
+
+        const categories = ['המבורגרים', 'שניצלונים', 'סלטים', 'משקאות'];
+        const categoryIndex = parseInt(prompt(`בחר קטגוריה (הזן מספר):\n${categories.map((cat, i) => `${i + 1}. ${cat}`).join('\n')}`)) - 1;
+
+        if (categoryIndex < 0 || categoryIndex >= categories.length) {
+            showNotification('קטגוריה לא תקינה', 'error');
+            return;
+        }
+
+        const emojis = ['🍔', '🍗', '🥗', '🥤'];
+        const emoji = prompt('אמוג\'י:', emojis[categoryIndex] || '🍽️');
+
+        const newItem = {
+            id: Date.now(),
+            name: name,
+            description: description || '',
+            price: price,
+            category: categories[categoryIndex],
+            available: true,
+            image: emoji || '🍽️'
+        };
+
+        menuItems.push(newItem);
+        renderMenu();
+        renderAdminMenu();
+        saveData();
+        showNotification('פריט חדש נוסף לתפריט!', 'success');
+    }
+
+    function renderAdminCustomers() {
+        const customersList = document.getElementById('customersList');
+
+        if (customers.length === 0) {
+            customersList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">👥</div>
+                    <div class="empty-state-text">אין לקוחות רשומים</div>
+                    <div class="empty-state-subtext">לקוחות חדשים יופיעו כאן אוטומטיקית</div>
+                </div>
+            `;
+            return;
+        }
+
+        customersList.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                ${customers.map(customer => `
+                    <div class="order-card">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">👤</div>
+                            <h3 style="color: var(--gold-primary);">${customer.name}</h3>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <div style="margin-bottom: 0.5rem;"><strong>📞 טלפון:</strong> ${customer.phone}</div>
+                            <div style="margin-bottom: 0.5rem;"><strong>🏠 כתובת:</strong> ${customer.address || 'לא הוזנה'}</div>
+                            <div style="margin-bottom: 0.5rem;"><strong>📅 הצטרף:</strong> ${formatDate(customer.joinDate)}</div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--gold-primary);">${customer.totalOrders || 0}</div>
+                                <div style="font-size: 0.8rem; color: var(--cream-light);">הזמנות</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--gold-secondary);">₪${customer.totalSpent || 0}</div>
+                                <div style="font-size: 0.8rem; color: var(--cream-light);">סה"כ רכישות</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    // Helper functions
+    function getStatusText(status) {
+        const statusMap = {
+            'new': 'חדשה',
+            'preparing': 'בהכנה',
+            'ready': 'מוכנה',
+            'delivered': 'נשלחה'
+        };
+        return statusMap[status] || status;
+    }
+
+    function formatTime(date) {
+        return new Date(date).toLocaleTimeString('he-IL', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function formatDate(date) {
+        return new Date(date).toLocaleDateString('he-IL');
+    }
+
+    function formatDateTime(date) {
+        return new Date(date).toLocaleString('he-IL');
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+
+        const colors = {
+            success: 'var(--success-green)',
+            error: 'var(--danger-red)',
+            warning: 'var(--warning-orange)',
+            info: 'var(--gold-primary)'
+        };
+
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: ${colors[type]}; font-size: 1.2rem;">${icons[type]}</span>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Show animation
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+
+        // Auto remove
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+    }
+
+    // Generate sample orders for demo
+    function generateSampleOrders() {
+        if (orders.length === 0) {
+            const sampleOrders = [
+                {
+                    id: "HZ001",
+                    customerName: "יוסי כהן",
+                    customerPhone: "052-1234567",
+                    customerAddress: "רחוב הרצל 45, תל אביב",
+                    items: [
+                        { name: "המבורגר הזיה קלאסי", price: 45, quantity: 2 },
+                        { name: "לימונדה בית טרייה", price: 18, quantity: 2 }
+                    ],
+                    total: 126,
+                    status: "new",
+                    time: new Date(Date.now() - 300000), // 5 minutes ago
+                    notes: "ללא בצל, אנא"
+                },
+                {
+                    id: "HZ002",
+                    customerName: "שרה לוי",
+                    customerPhone: "054-9876543",
+                    customerAddress: "רחוב דיזנגוף 123, תל אביב",
+                    items: [
+                        { name: "שניצל ביסטרו", price: 38, quantity: 1 },
+                        { name: "סלט קיסר הזיה", price: 32, quantity: 1 }
+                    ],
+                    total: 70,
+                    status: "preparing",
+                    time: new Date(Date.now() - 900000), // 15 minutes ago
+                    notes: ""
+                }
+            ];
+
+            orders.push(...sampleOrders);
+
+            // Add sample customers
+            customers.push(
+                {
+                    id: 1,
+                    name: "יוסי כהן",
+                    phone: "052-1234567",
+                    address: "רחוב הרצל 45, תל אביב",
+                    joinDate: "2024-01-15",
+                    totalOrders: 8,
+                    totalSpent: 520
+                },
+                {
+                    id: 2,
+                    name: "שרה לוי",
+                    phone: "054-9876543",
+                    address: "רחוב דיזנגוף 123, תל אביב",
+                    joinDate: "2024-02-20",
+                    totalOrders: 5,
+                    totalSpent: 340
+                }
+            );
+
+            saveData();
+        }
+    }
+</script>
+</body>
+</html>

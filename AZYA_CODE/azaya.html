@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הזיה - מסעדת בשר כשרה</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emailjs-com/3.2.0/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">הזיה</div>
+        <ul class="nav-links">
+            <li><a href="#home">בית</a></li>
+            <li><a href="#menu">תפריט</a></li>
+            <li><a href="#contact">צור קשר</a></li>
+            <li><a href="#" onclick="openOrderStatusModal()">📋 מעקב הזמנה</a></li>
+            <li><a href="#" onclick="openCustomerHistoryModal()">📊 היסטוריה שלי</a></li>
+            <li><button class="admin-btn" onclick="openAdminLogin()">⚙️ ניהול</button></li>
+        </ul>
+        <button class="mobile-menu-toggle">☰</button>
+    </nav>
+</header>
+
+<!-- Login Modal -->
+<div class="modal" id="loginModal">
+    <div class="modal-content">
+        <h2>🔐 כניסת מנהל</h2>
+        <div id="lastLoginInfo" style="display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--border-radius); padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--accent-blue); text-align: center;">
+            👤 שם המשתמש האחרון נטען
+        </div>
+        <div class="form-group">
+            <label for="username">שם משתמש:</label>
+            <input type="text" id="username" placeholder="הזן שם משתמש" onkeypress="handleEnterLogin(event)">
+        </div>
+        <div class="form-group">
+            <label for="password">סיסמה:</label>
+            <input type="password" id="password" placeholder="הזן סיסמה" onkeypress="handleEnterLogin(event)">
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin-bottom: 1rem;">
+            💡 לחץ Enter להתחברות מהירה
+        </div>
+        <div class="modal-buttons">
+            <button class="btn btn-primary" onclick="login()">🔓 התחבר</button>
+            <button class="btn btn-secondary" onclick="closeAdminLogin()">❌ ביטול</button>
+        </div>
+    </div>
+</div>
+
+<!-- Customer History Modal -->
+<div class="modal" id="customerHistoryModal">
+    <div class="modal-content" style="max-width: 700px;">
+        <h2>📊 ההיסטוריה שלי</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align: center;">הזן את מספר הטלפון שלך לצפייה בהיסטוריית ההזמנות</p>
+
+        <div class="form-group">
+            <label for="customerPhoneInput">מספר טלפון:</label>
+            <input type="tel" id="customerPhoneInput" placeholder="050-1234567">
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn btn-primary" onclick="loadCustomerHistory()">📊 טען היסטוריה</button>
+            <button class="btn btn-secondary" onclick="closeCustomerHistoryModal()">❌ סגור</button>
+        </div>
+
+        <div id="customerHistoryResult" style="margin-top: 1.5rem; display: none;">
+            <!-- Customer history result will be shown here -->
+        </div>
+    </div>
+</div>
+
+<!-- Order Status Check Modal -->
+<div class="modal" id="orderStatusModal">
+    <div class="modal-content">
+        <h2>🔍 בדיקת סטטוס הזמנה</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align: center;">הזן את מספר ההזמנה שלך לבדיקת סטטוס</p>
+
+        <div class="form-group">
+            <label for="orderNumberInput">מספר הזמנה:</label>
+            <input type="text" id="orderNumberInput" placeholder="HZ240120..." style="text-transform: uppercase;">
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn btn-primary" onclick="checkOrderStatus()">🔍 בדוק סטטוס</button>
+            <button class="btn btn-secondary" onclick="closeOrderStatusModal()">❌ סגור</button>
+        </div>
+
+        <div id="orderStatusResult" style="margin-top: 1.5rem; display: none;">
+            <!-- Order status result will be shown here -->
+        </div>
+    </div>
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+        <h2 class="admin-title">⚡ פאנל ניהול - הזיה</h2>
+        <button class="close-admin" onclick="closeAdmin()">✕ סגור</button>
+    </div>
+
+    <div class="admin-content">
+        <div class="admin-sidebar">
+            <h3 style="color: var(--primary-gold); margin-bottom: 1rem; font-weight: 700;">📊 סטטיסטיקות</h3>
+
+            <!-- Quick Stats -->
+            <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                    <div>
+                        <div style="font-size: 1.2rem; font-weight: 700; color: var(--primary-gold);" id="totalMenuItems">0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">פריטים</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent-green);" id="totalCategories">4</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">קטגוריות</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <h4 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1rem;">⚡ פעולות מהירות</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <button class="btn btn-success" onclick="exportMenu()" style="padding: 0.75rem; width: 100%; font-size: 0.9rem;">
+                    📤 יצא תפריט
+                </button>
+                <button class="btn btn-primary" onclick="importMenu()" style="padding: 0.75rem; width: 100%; font-size: 0.9rem;">
+                    📥 יבא תפריט
+                </button>
+                <button class="btn btn-secondary" onclick="resetMenu()" style="padding: 0.75rem; width: 100%; font-size: 0.9rem;">
+                    🔄 איפוס תפריט
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="switchTab('menu')">🍽️ ניהול תפריט</button>
+                <button class="tab-btn" onclick="switchTab('orders')">📋 ניהול הזמנות</button>
+                <button class="tab-btn" onclick="switchTab('inventory')">📦 ניהול מלאי</button>
+                <button class="tab-btn" onclick="switchTab('customers')">👥 לקוחות</button>
+                <button class="tab-btn" onclick="switchTab('background')">🎨 ניהול רקע</button>
+                <button class="tab-btn" onclick="switchTab('database')">💾 מסד נתונים</button>
+                <button class="tab-btn" onclick="switchTab('settings')">⚙️ הגדרות</button>
+            </div>
+
+            <!-- Menu Management Tab -->
+            <div class="tab-content active" id="menuTab">
+                <!-- Categories Management Section -->
+                <div class="settings-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4>📂 ניהול קטגוריות</h4>
+                        <button class="btn btn-success" onclick="showAddCategoryForm()" style="padding: 0.5rem 1rem;">
+                            ➕ הוסף קטגוריה
+                        </button>
+                    </div>
+
+                    <div id="categoriesList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <!-- Categories will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Selected Category Items Section -->
+                <div class="settings-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <h4 id="selectedCategoryTitle">🍔 המבורגרים</h4>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;" id="selectedCategoryDesc">ניהול פריטי הקטגוריה הנבחרת</p>
+                        </div>
+                        <button class="btn btn-success" onclick="showAddItemForm()" style="padding: 0.5rem 1rem;">
+                            ➕ הוסף מוצר
+                        </button>
+                    </div>
+
+                    <div class="item-list" id="adminItemList" style="max-height: 500px; overflow-y: auto;">
+                        <!-- Items will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Add/Edit Category Form -->
+                <div class="category-form" id="categoryForm" style="display: none;">
+                    <div class="settings-section">
+                        <h3 style="color: var(--primary-gold); margin-bottom: 1rem; font-weight: 700;">📝 הוסף/ערוך קטגוריה</h3>
+                        <div class="form-group">
+                            <label>שם הקטגוריה:</label>
+                            <input type="text" id="categoryName" placeholder="שם הקטגוריה" oninput="generateCategoryId()">
+                        </div>
+                        <div class="form-group">
+                            <label>תיאור:</label>
+                            <input type="text" id="categoryDescription" placeholder="תיאור הקטגוריה">
+                        </div>
+                        <div class="form-group">
+                            <label>אייקון:</label>
+                            <input type="text" id="categoryIcon" placeholder="🍔" maxlength="2">
+                            <small style="color: var(--text-secondary); font-size: 0.8rem;">בחר אמוג'י מתאים לקטגוריה</small>
+                        </div>
+                        <div class="form-group">
+                            <label>מזהה ייחודי (אנגלית):</label>
+                            <input type="text" id="categoryId" placeholder="burgers" pattern="[a-z0-9_]+" title="רק אותיות אנגליות קטנות, מספרים וקו תחתון">
+                            <small style="color: var(--text-secondary); font-size: 0.8rem;">מזהה ייחודי באנגלית (לא ניתן לשינוי לאחר יצירה)</small>
+                        </div>
+                        <div class="modal-buttons">
+                            <button class="btn btn-primary" onclick="saveCategory()">💾 שמור</button>
+                            <button class="btn btn-secondary" onclick="cancelCategoryEdit()">❌ ביטול</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Item Form -->
+                <div class="item-form" id="itemForm" style="display: none;">
+                    <div class="settings-section">
+                        <h3 style="color: var(--primary-gold); margin-bottom: 1rem; font-weight: 700;">📝 הוסף/ערוך מוצר</h3>
+                        <div class="form-group">
+                            <label>שם המוצר:</label>
+                            <input type="text" id="itemName" placeholder="שם המוצר">
+                        </div>
+                        <div class="form-group">
+                            <label>תיאור:</label>
+                            <input type="text" id="itemDescription" placeholder="תיאור המוצר">
+                        </div>
+                        <div class="form-group">
+                            <label>מחיר (₪):</label>
+                            <input type="number" id="itemPrice" placeholder="מחיר" min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>תמונה:</label>
+                            <input type="file" id="itemImage" accept="image/*" onchange="previewImage()">
+                            <img id="imagePreview" style="width: 150px; height: 150px; object-fit: cover; border-radius: var(--border-radius); margin-top: 1rem; display: none;" alt="תצוגה מקדימה">
+                        </div>
+                        <div class="modal-buttons">
+                            <button class="btn btn-primary" onclick="saveItem()">💾 שמור</button>
+                            <button class="btn btn-secondary" onclick="cancelEdit()">❌ ביטול</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Management Tab -->
+            <div class="tab-content" id="inventoryTab">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3 style="color: var(--primary-gold); margin: 0; font-weight: 700;">📦 ניהול מלאי</h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-primary" onclick="updateAllInventory()" style="padding: 0.5rem 1rem;">
+                            🔄 עדכן הכל
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportInventory()" style="padding: 0.5rem 1rem;">
+                            📤 יצא דוח
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Inventory Statistics -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalItemsCount">0</div>
+                        <div class="stat-label">📦 סה"כ פריטים</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="inStockCount">0</div>
+                        <div class="stat-label">✅ זמינים</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="lowStockCount">0</div>
+                        <div class="stat-label">⚠️ מלאי נמוך</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="outOfStockCount">0</div>
+                        <div class="stat-label">❌ אזל מהמלאי</div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="settings-section">
+                    <h4>⚡ פעולות מהירות</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        <button class="btn btn-danger" onclick="markAllOutOfStock()" style="padding: 1rem;">
+                            ❌ סמן הכל כאזל מהמלאי
+                        </button>
+                        <button class="btn btn-success" onclick="markAllInStock()" style="padding: 1rem;">
+                            ✅ סמן הכל כזמין
+                        </button>
+                        <button class="btn btn-primary" onclick="showWaitTimeSettings()" style="padding: 1rem;">
+                            ⏰ עדכן זמני המתנה
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewInventoryHistory()" style="padding: 1rem;">
+                            📊 היסטוריית מלאי
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Inventory Items List -->
+                <div class="settings-section">
+                    <h4>📋 פריטי מלאי</h4>
+                    <div id="inventoryList">
+                        <!-- Inventory items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Management Tab -->
+            <div class="tab-content" id="customersTab">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3 style="color: var(--primary-gold); margin: 0; font-weight: 700;">👥 ניהול לקוחות</h3>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <input type="text" id="customerSearch" placeholder="🔍 חפש לקוח..."
+                               style="padding: 0.5rem 1rem; border-radius: var(--border-radius); border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-primary);"
+                               oninput="searchCustomers()">
+                        <button class="btn btn-primary" onclick="syncCustomersFromSupabase()" style="padding: 0.5rem 1rem;">
+                            🔄 סנכרן
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportCustomers()" style="padding: 0.5rem 1rem;">
+                            📤 יצא
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Customer Statistics -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalCustomersCount">0</div>
+                        <div class="stat-label">👥 סה"כ לקוחות</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="newCustomersToday">0</div>
+                        <div class="stat-label">🆕 חדשים היום</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="returningCustomers">0</div>
+                        <div class="stat-label">🔄 חוזרים</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="topCustomerSpent">₪0</div>
+                        <div class="stat-label">👑 לקוח מוביל</div>
+                    </div>
+                </div>
+
+                <!-- Customers List -->
+                <div class="settings-section">
+                    <h4>📋 רשימת לקוחות</h4>
+                    <div id="customersList" style="max-height: 600px; overflow-y: auto;">
+                        <!-- Customers will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Management Tab -->
+            <div class="tab-content" id="ordersTab">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3 style="color: var(--primary-gold); margin: 0; font-weight: 700;">📋 ניהול הזמנות</h3>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary);">
+                            <div class="status-indicator green"></div>
+                            <span>מחובר</span>
+                        </div>
+                        <button class="btn btn-secondary" onclick="clearAllOrders()" style="padding: 0.5rem 1rem;">
+                            🗑️ נקה הכל
+                        </button>
+                        <button class="btn btn-primary" onclick="testNewOrder()" style="padding: 0.5rem 1rem;">
+                            ➕ הזמנת בדיקה
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Orders Statistics -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="newOrdersCount">0</div>
+                        <div class="stat-label">🆕 הזמנות חדשות</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="cookingOrdersCount">0</div>
+                        <div class="stat-label">👨‍🍳 בהכנה</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="readyOrdersCount">0</div>
+                        <div class="stat-label">✅ מוכנות</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalRevenue">₪0</div>
+                        <div class="stat-label">💰 סה"כ היום</div>
+                    </div>
+                </div>
+
+                <!-- Orders Board (Trello Style) -->
+                <div class="orders-board">
+                    <!-- New Orders Column -->
+                    <div class="orders-column" data-status="new">
+                        <div class="column-header">
+                            <div class="column-title">
+                                <span class="column-icon">🆕</span>
+                                <span>הזמנות חדשות</span>
+                                <span class="orders-badge" id="newBadge">0</span>
+                            </div>
+                        </div>
+                        <div class="orders-list" id="newOrders" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            <!-- Order cards will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Cooking Orders Column -->
+                    <div class="orders-column" data-status="cooking">
+                        <div class="column-header">
+                            <div class="column-title">
+                                <span class="column-icon">👨‍🍳</span>
+                                <span>בהכנה</span>
+                                <span class="orders-badge" id="cookingBadge">0</span>
+                            </div>
+                        </div>
+                        <div class="orders-list" id="cookingOrders" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            <!-- Order cards will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Ready Orders Column -->
+                    <div class="orders-column" data-status="ready">
+                        <div class="column-header">
+                            <div class="column-title">
+                                <span class="column-icon">✅</span>
+                                <span>מוכנות למשלוח</span>
+                                <span class="orders-badge" id="readyBadge">0</span>
+                            </div>
+                        </div>
+                        <div class="orders-list" id="readyOrders" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            <!-- Order cards will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Completed Orders Column -->
+                    <div class="orders-column" data-status="completed">
+                        <div class="column-header">
+                            <div class="column-title">
+                                <span class="column-icon">🎉</span>
+                                <span>הושלמו</span>
+                                <span class="orders-badge" id="completedBadge">0</span>
+                            </div>
+                        </div>
+                        <div class="orders-list" id="completedOrders" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            <!-- Order cards will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Background Management Tab -->
+            <div class="tab-content" id="backgroundTab">
+                <h3 style="color: var(--primary-gold); margin-bottom: 1rem; font-weight: 700;">🌈 ניהול רקע האתר</h3>
+                <!-- Background options would go here -->
+            </div>
+
+            <!-- Database Tab -->
+            <div class="tab-content" id="databaseTab">
+                <h3 style="color: var(--primary-gold); margin-bottom: 1rem; font-weight: 700;">💾 ניהול מסד נתונים</h3>
+
+                <div class="status-card disconnected" id="dbStatus">
+                    <div class="status-indicator red" id="statusIndicator"></div>
+                    <span id="statusText">לא מחובר למסד נתונים</span>
+                </div>
+
+                <!-- Database controls would go here -->
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-content" id="settingsTab">
+                <h3 style="color: var(--primary-gold); margin-bottom: 1rem; font-weight: 700;">⚙️ הגדרות מערכת</h3>
+
+                <!-- Email Settings -->
+                <div class="settings-section">
+                    <h4>📧 הגדרות מייל</h4>
+
+                    <div class="form-group">
+                        <label>כתובת מייל למשלוח הזמנות:</label>
+                        <input type="email" id="restaurantEmail" placeholder="restaurant@example.com" value="hazya.restaurant@gmail.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>שם המסעדה במייל:</label>
+                        <input type="text" id="restaurantName" placeholder="שם המסעדה" value="מסעדת הזיה">
+                    </div>
+
+                    <div class="form-group">
+                        <label>טלפון המסעדה:</label>
+                        <input type="tel" id="restaurantPhone" placeholder="03-1234567" value="03-9876543">
+                    </div>
+
+                    <div class="form-group">
+                        <label>כתובת המסעדה:</label>
+                        <input type="text" id="restaurantAddress" placeholder="כתובת המסעדה" value="רחוב הרצל 25, תל אביב">
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button class="btn btn-primary" onclick="saveEmailSettings()">💾 שמור הגדרות</button>
+                        <button class="btn btn-secondary" onclick="testEmailService()">✉️ בדוק מייל</button>
+                    </div>
+
+                    <div class="status-card disconnected" id="emailStatus" style="margin-top: 1rem;">
+                        <div class="status-indicator red" id="emailIndicator"></div>
+                        <span id="emailStatusText">שירות מייל לא הוגדר</span>
+                    </div>
+                </div>
+
+                <!-- Payment Settings -->
+                <div class="settings-section">
+                    <h4>💳 הגדרות תשלום</h4>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="enableCashPayment" checked>
+                            💵 אפשר תשלום במזומן
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="enableBitPayment" checked>
+                            📱 אפשר תשלום בביט
+                        </label>
+                    </div>
+
+                    <h5 style="color: var(--primary-gold); margin: 1.5rem 0 1rem 0; font-weight: 600;">📱 הגדרות ביט</h5>
+
+                    <div class="info-box">
+                        <p><strong>💡 איך להגדיר ביט עסקי:</strong><br>
+                            1. פתח חשבון ביט עסקי במספר הטלפון שלך<br>
+                            2. הכנס את מספר הטלפון של החשבון העסקי<br>
+                            3. בחר אם לחייב מיד או להמתין לאישור<br>
+                            4. לקוחות יוכלו לשלם דרך QR או קישור ישיר</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>מספר ביט עסקי:</label>
+                        <input type="tel" id="bitBusinessPhone" placeholder="050-1234567" value="050-9876543">
+                    </div>
+
+                    <div class="form-group">
+                        <label>שם עסק בביט:</label>
+                        <input type="text" id="bitBusinessName" placeholder="שם העסק" value="מסעדת הזיה">
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="bitInstantCharge">
+                            ⚡ חיוב מיידי (ללא המתנה לאישור לקוח)
+                        </label>
+                    </div>
+
+                    <div class="status-card testing" id="bitStatus" style="margin: 1rem 0;">
+                        <div class="status-indicator yellow" id="bitIndicator"></div>
+                        <span id="bitStatusText">ביט מוגדר (מצב הדגמה)</span>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button class="btn btn-primary" onclick="saveBitSettings()">💾 שמור הגדרות ביט</button>
+                        <button class="btn btn-secondary" onclick="testBitPayment()">📱 בדוק ביט</button>
+                    </div>
+                </div>
+
+                <!-- Order Settings -->
+                <div class="settings-section">
+                    <h4>🛍️ הגדרות הזמנות</h4>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="sendOrderEmails" checked>
+                            📧 שלח מייל אוטומטי עם כל הזמנה
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="requireCustomerInfo" checked>
+                            📝 בקש פרטי לקוח לפני ביצוע הזמנה
+                        </label>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>⏱️ זמן הכנה משוער (דקות):</label>
+                            <input type="number" id="preparationTime" value="25" min="5" max="120">
+                        </div>
+
+                        <div class="form-group">
+                            <label>🚚 דמי משלוח (₪):</label>
+                            <input type="number" id="deliveryFee" value="15" min="0" max="50">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveOrderSettings()">💾 שמור הגדרות הזמנות</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Details Modal -->
+<div class="modal" id="customerModal">
+    <div class="modal-content">
+        <h2>👤 פרטי לקוח</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align: center;">אנא מלא את הפרטים שלך לביצוע ההזמנה</p>
+
+        <div class="form-group">
+            <label for="customerName">👨‍💼 שם מלא:</label>
+            <input type="text" id="customerName" placeholder="הזן שם מלא" required>
+        </div>
+
+        <div class="form-group">
+            <label for="customerPhone">📞 טלפון:</label>
+            <input type="tel" id="customerPhone" placeholder="050-1234567" required>
+        </div>
+
+        <div class="form-group">
+            <label for="customerAddress">🏠 כתובת למשלוח:</label>
+            <input type="text" id="customerAddress" placeholder="רחוב, מספר בית, עיר">
+        </div>
+
+        <div class="form-group">
+            <label for="customerNotes">📝 הערות מיוחדות:</label>
+            <textarea id="customerNotes" rows="3" placeholder="הערות מיוחדות להזמנה..."></textarea>
+        </div>
+
+        <!-- Payment Method Selection -->
+        <div class="form-group">
+            <label>💳 אמצעי תשלום:</label>
+            <div class="payment-method-grid">
+                <label class="payment-option selected" onclick="selectPaymentMethod('cash')">
+                    <input type="radio" name="paymentMethod" value="cash" checked style="margin-left: 0.5rem;">
+                    <div style="text-align: center; width: 100%;">
+                        <div class="payment-icon">💵</div>
+                        <div class="payment-title">מזומן</div>
+                        <div class="payment-description">תשלום במזומן עם המשלוח</div>
+                    </div>
+                </label>
+                <label class="payment-option" onclick="selectPaymentMethod('bit')">
+                    <input type="radio" name="paymentMethod" value="bit" style="margin-left: 0.5rem;">
+                    <div style="text-align: center; width: 100%;">
+                        <div class="payment-icon">📱</div>
+                        <div class="payment-title">ביט</div>
+                        <div class="payment-description">תשלום מיידי דרך אפליקציה</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Order Summary in Modal -->
+        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: var(--border-radius); margin: 1.5rem 0;">
+            <h4 style="color: var(--primary-gold); margin-bottom: 1rem; font-weight: 700;">📋 סיכום הזמנה:</h4>
+            <div id="modalOrderSummary"></div>
+            <div style="border-top: 1px solid var(--glass-border); margin-top: 1rem; padding-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>סה"כ מוצרים:</span>
+                    <span id="modalSubtotal">₪0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>דמי משלוח:</span>
+                    <span id="modalDeliveryFee">₪15</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--accent-green); font-size: 1.2rem; border-top: 1px solid var(--glass-border); padding-top: 0.5rem;">
+                    <span>סה"כ לתשלום:</span>
+                    <span id="modalTotal">₪0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn btn-primary" onclick="confirmOrder()">✅ המשך לתשלום</button>
+            <button class="btn btn-secondary" onclick="closeCustomerModal()">❌ ביטול</button>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal" id="paymentModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <h2 style="text-align: center; margin-bottom: 1.5rem;">💳 תשלום</h2>
+
+        <!-- Payment Summary -->
+        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: var(--border-radius); margin-bottom: 2rem;">
+            <h4 style="color: var(--primary-gold); margin-bottom: 1rem; font-weight: 700;">📊 סיכום תשלום:</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>סה"כ מוצרים:</span>
+                <span id="paymentSubtotal">₪0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>דמי משלוח:</span>
+                <span id="paymentDeliveryFee">₪15</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--accent-green); font-size: 1.3rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                <span>סה"כ לתשלום:</span>
+                <span id="paymentTotal">₪0</span>
+            </div>
+        </div>
+
+        <!-- Cash Payment -->
+        <div id="cashPayment" style="display: none;">
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 5rem; margin-bottom: 1rem;">💵</div>
+                <h3 style="color: var(--accent-green); margin-bottom: 1rem; font-weight: 700;">תשלום במזומן</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6;">
+                    תשלום יתבצע במזומן עם הגעת השליח.<br>
+                    אנא הכינו את הסכום המדויק.
+                </p>
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1.5rem; border-radius: var(--border-radius); margin-bottom: 2rem;">
+                    <p style="font-weight: 700; color: var(--accent-green); margin: 0; font-size: 1.2rem;">
+                        💰 סכום לתשלום: <span id="cashAmount">₪0</span>
+                    </p>
+                </div>
+                <button class="btn btn-primary" onclick="completeCashPayment()" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                    ✅ אשר הזמנה
+                </button>
+            </div>
+        </div>
+
+        <!-- Bit Payment -->
+        <div id="bitPayment" style="display: none;">
+            <div style="text-align: center;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                    <div style="font-size: 2.5rem;">📱</div>
+                    <h3 style="color: #0066cc; margin: 0; font-weight: 700;">תשלום בביט</h3>
+                </div>
+
+                <!-- QR Code Area -->
+                <div style="background: white; padding: 2rem; border-radius: var(--border-radius-lg); margin: 2rem auto; max-width: 320px; border: 2px solid #0066cc; box-shadow: var(--shadow-md);">
+                    <div id="bitQrCode" style="text-align: center;">
+                        <div style="width: 240px; height: 240px; background: linear-gradient(45deg, #f8f9fa, #e9ecef); border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #495057; border: 2px dashed #dee2e6;">
+                            <div>
+                                <div style="font-size: 3rem; margin-bottom: 0.5rem;">📱</div>
+                                <div style="font-size: 1rem; font-weight: 600;">QR קוד ביט</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="color: #333; font-size: 1rem; margin: 1.5rem 0 0 0; font-weight: 700;">
+                        💰 סכום: <span id="bitAmount">₪0</span>
+                    </p>
+                </div>
+
+                <!-- Instructions -->
+                <div style="background: rgba(0, 102, 204, 0.1); border: 1px solid rgba(0, 102, 204, 0.3); padding: 1.5rem; border-radius: var(--border-radius); margin-bottom: 2rem; text-align: right;">
+                    <h5 style="color: #0066cc; margin-bottom: 1rem; font-weight: 700;">📋 הוראות תשלום:</h5>
+                    <ol style="margin: 0; padding-right: 1.5rem; color: var(--text-secondary); line-height: 1.6;">
+                        <li>פתח את אפליקציית ביט בטלפון</li>
+                        <li>סרוק את קוד ה-QR או לחץ על הקישור</li>
+                        <li>אשר את התשלום באפליקציה</li>
+                        <li>המתן לאישור התשלום</li>
+                    </ol>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <button class="btn btn-primary" onclick="openBitApp()">
+                        📱 פתח ביט
+                    </button>
+                    <button class="btn btn-success" onclick="confirmBitPayment()">
+                        ✅ שילמתי
+                    </button>
+                </div>
+
+                <!-- Payment Status -->
+                <div id="bitPaymentStatus" style="margin-top: 1.5rem; display: none; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1rem; border-radius: var(--border-radius);">
+                    <div class="spinner" style="margin: 0 auto 1rem;"></div>
+                    <p style="color: var(--accent-blue); font-weight: 600;">🔄 מאמת תשלום...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn btn-secondary" onclick="closePaymentModal()">
+                ⬅️ חזור לפרטי הזמנה
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Order Confirmation Modal -->
+<div class="modal" id="confirmationModal">
+    <div class="modal-content">
+        <div style="text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+            <h2 style="color: var(--accent-green); margin-bottom: 1rem; font-weight: 700;">ההזמנה התקבלה בהצלחה!</h2>
+
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 2rem; border-radius: var(--border-radius); margin: 2rem 0;">
+                <p style="margin-bottom: 1rem;"><strong>🏷️ מספר הזמנה:</strong> <span id="confirmOrderNumber" style="color: var(--primary-gold); font-weight: 700;"></span></p>
+                <p style="margin-bottom: 1rem;"><strong>⏱️ זמן הכנה משוער:</strong> <span id="confirmPrepTime"></span> דקות</p>
+                <p><strong>💰 סה"כ לתשלום:</strong> <span id="confirmTotal" style="color: var(--accent-green); font-weight: 700;"></span></p>
+            </div>
+
+            <p style="color: var(--text-secondary); margin: 1.5rem 0; line-height: 1.6;">
+                📞 נחזור אליך בקרוב לאישור ההזמנה ופרטי התשלום.<br>
+                📧 המסעדה תקבל מייל עם פרטי ההזמנה.
+            </p>
+
+            <button class="btn btn-primary" onclick="closeConfirmationModal()" style="margin-top: 1rem; padding: 1rem 2rem;">
+                👍 מעולה!
+            </button>
+        </div>
+    </div>
+</div>
+
+<section class="hero" id="home">
+    <div class="hero-content">
+        <h1>הזיה</h1>
+        <p>המסעדה הכשרה הטובה ביותר בעיר</p>
+        <p>המבורגרים, שניצלונים ועוד טעמים שלא תשכחו!</p>
+        <a href="#menu" class="cta-button">🍽️ הזמן עכשיו</a>
+    </div>
+</section>
+
+<section class="menu-section" id="menu">
+    <div class="container">
+        <h2 class="section-title">התפריט שלנו</h2>
+
+        <div class="menu-categories" id="menuCategoriesContainer">
+            <!-- Categories will be loaded dynamically -->
+        </div>
+
+        <div id="menuItemsContainer">
+            <!-- Menu items containers will be added dynamically -->
+        </div>
+    </div>
+</section>
+
+<!-- Cart -->
+<div class="cart" id="cart">
+    <div class="cart-header">
+        <h3 class="cart-title">🛒 סל הקניות</h3>
+        <button class="close-cart" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+        <p style="text-align: center; color: var(--text-secondary);">הסל ריק</p>
+    </div>
+    <div class="cart-total" id="cart-total">סה"כ: ₪0</div>
+    <button class="checkout-btn" onclick="checkout()">🎯 בצע הזמנה</button>
+</div>
+
+<!-- Cart Icon -->
+<button class="cart-icon" onclick="toggleCart()">
+    🛒
+    <span class="cart-count" id="cart-count">0</span>
+</button>
+
+<!-- עדכן את ה-HTML לטעון את הקבצים החדשים -->
+<!-- במקום <script src="script.js"></script> הוסף: -->
+
+<!-- Core Files -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+
+<!-- Data Management -->
+<script src="js/data-storage.js"></script>
+<script src="js/menu-data.js"></script>
+
+<!-- UI Components -->
+<script src="js/ui-components.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/modals.js"></script>
+
+<!-- Management Modules -->
+<script src="js/menu-management.js"></script>
+<script src="js/orders-management.js"></script>
+<script src="js/customers-management.js"></script>
+<script src="js/inventory-management.js"></script>
+<script src="js/background-management.js"></script>
+
+<!-- User Features -->
+<script src="js/cart-management.js"></script>
+<script src="js/payment-management.js"></script>
+<script src="js/user-interface.js"></script>
+
+<!-- Admin Features -->
+<script src="js/admin-panel.js"></script>
+<script src="js/settings-management.js"></script>
+
+<!-- PWA Features -->
+<script src="js/pwa-handler.js"></script>
+
+<!-- Data Management -->
+<script src="js/data-storage.js"></script>
+<script src="js/menu-data.js"></script>
+
+
+<!-- UI Components -->
+<!-- Main Application -->
+<script src="js/main.js"></script></body>
+
+
+
+<!-- Theme Management -->
+<script src="js/theme-manager.js"></script>
+<script src="js/theme-selector-modal.js"></script>
+
+</html>
+
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>קבצים חסרים - מסעדת הזיה</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2c1810, #1a0f0a);
+            color: white;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .file-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .file-title {
+            color: #d4af37;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .code-block {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .download-btn {
+            background: #d4af37;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 5px;
+        }
+        .download-btn:hover {
+            background: #b8941f;
+        }
+        .instructions {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+

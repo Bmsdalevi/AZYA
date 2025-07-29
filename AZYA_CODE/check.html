@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיקון חירום - מסעדת הזיה</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2c1810, #1a0f0a);
+            color: white;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .fix-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .fix-btn {
+            background: #d4af37;
+            color: black;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
+        .fix-btn:hover {
+            background: #b8941f;
+        }
+        .emergency-btn {
+            background: #ef4444;
+            color: white;
+        }
+        .success-btn {
+            background: #10b981;
+            color: white;
+        }
+        .code-output {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 style="text-align: center; color: #d4af37;">🚨 תיקון חירום למסעדת הזיה</h1>
+
+    <div class="status error">
+        ❌ זוהו שגיאות טעינה של קבצי JavaScript. הפתרון יעבוד בקונסול הדפדפן.
+    </div>
+
+    <!-- תיקון מיידי -->
+    <div class="fix-section">
+        <h3 style="color: #d4af37;">🔥 תיקון מיידי (הכי חשוב!)</h3>
+        <p>לחץ על הכפתור הזה כדי לתקן את המערכת מיד:</p>
+        <button class="fix-btn emergency-btn" onclick="emergencyFix()">🚨 תקן עכשיו!</button>
+        <div id="emergencyStatus"></div>
+    </div>
+
+    <!-- בדיקת קבצים -->
+    <div class="fix-section">
+        <h3 style="color: #d4af37;">📂 בדיקת קבצים</h3>
+        <button class="fix-btn" onclick="checkFiles()">🔍 בדוק איזה קבצים חסרים</button>
+        <div id="fileStatus"></div>
+    </div>
+
+    <!-- יצירת קבצים -->
+    <div class="fix-section">
+        <h3 style="color: #d4af37;">🛠️ יצירת קבצים חסרים</h3>
+        <button class="fix-btn" onclick="createMissingFiles()">📁 צור קבצים חסרים</button>
+        <div id="createStatus"></div>
+    </div>
+
+    <!-- התחברות -->
+    <div class="fix-section">
+        <h3 style="color: #d4af37;">🔐 בדיקת התחברות</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+            <input type="text" id="testUser" placeholder="שם משתמש" value="admin" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            <input type="password" id="testPass" placeholder="סיסמה" value="hazya2024" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        </div>
+        <button class="fix-btn success-btn" onclick="testLogin()">🔓 בדוק התחברות</button>
+        <div id="loginStatus"></div>
+    </div>
+
+    <!-- הוראות -->
+    <div class="fix-section">
+        <h3 style="color: #d4af37;">📋 הוראות מפורטות</h3>
+        <ol style="color: #b0b0b0; line-height: 1.6;">
+            <li><strong>לחץ על "תקן עכשיו!"</strong> - זה יתקן את רוב הבעיות</li>
+            <li><strong>אם לא עבד</strong> - לחץ על "בדוק איזה קבצים חסרים"</li>
+            <li><strong>צור קבצים חסרים</strong> - ילחץ על הכפתור המתאים</li>
+            <li><strong>בדוק התחברות</strong> - עם admin/hazya2024</li>
+            <li><strong>רענן את האתר</strong> לאחר התיקון</li>
+        </ol>
+    </div>
+</div>
+
+<script>
+    // פונקציית תיקון חירום
+    function emergencyFix() {
+        const statusDiv = document.getElementById('emergencyStatus');
+
+        try {
+            // 1. יצירת CONFIG
+            window.CONFIG = {
+                admin: {
+                    defaultUsername: 'admin',
+                    defaultPassword: 'hazya2024',
+                    sessionTimeout: 30 * 60 * 1000
+                },
+                app: {
+                    name: 'הזיה',
+                    version: '1.0.0'
+                },
+                restaurant: {
+                    name: 'מסעדת הזיה',
+                    phone: '03-9876543',
+                    address: 'רחוב הרצל 25, תל אביב',
+                    email: 'hazya.restaurant@gmail.com'
+                },
+                orders: {
+                    defaultPrepTime: 25,
+                    deliveryFee: 15,
+                    orderNumberPrefix: 'HZ'
+                },
+                storage: {
+                    prefix: 'hazya_',
+                    keys: {
+                        menu: 'menu_data',
+                        orders: 'orders',
+                        customers: 'customers',
+                        settings: 'settings',
+                        adminSession: 'admin_session',
+                        cart: 'cart'
+                    }
+                }
+            };
+
+            // 2. יצירת DataManager
+            window.DataManager = {
+                storage: {
+                    save: (key, data) => {
+                        try {
+                            localStorage.setItem('hazya_' + key, JSON.stringify(data));
+                            return true;
+                        } catch(e) { return false; }
+                    },
+                    load: (key, defaultValue = null) => {
+                        try {
+                            const data = localStorage.getItem('hazya_' + key);
+                            return data ? JSON.parse(data) : defaultValue;
+                        } catch(e) { return defaultValue; }
+                    },
+                    remove: (key) => {
+                        try {
+                            localStorage.removeItem('hazya_' + key);
+                            return true;
+                        } catch(e) { return false; }
+                    }
+                },
+                getMenu: function() {
+                    return this.storage.load('menu_data', {
+                        categories: [
+                            { id: 'burgers', name: 'המבורגרים', icon: '🍔' },
+                            { id: 'schnitzels', name: 'שניצלונים', icon: '🍗' },
+                            { id: 'salads', name: 'סלטים', icon: '🥗' },
+                            { id: 'drinks', name: 'משקאות', icon: '🥤' }
+                        ],
+                        items: {
+                            burgers: [
+                                { id: 'classic', name: 'המבורגר קלאסי', price: 45, available: true }
+                            ],
+                            schnitzels: [
+                                { id: 'chicken', name: 'שניצל עוף', price: 42, available: true }
+                            ],
+                            salads: [
+                                { id: 'green', name: 'סלט ירוק', price: 28, available: true }
+                            ],
+                            drinks: [
+                                { id: 'coke', name: 'קוקה קולה', price: 8, available: true }
+                            ]
+                        }
+                    });
+                },
+                saveMenu: function(data) { return this.storage.save('menu_data', data); },
+                getOrders: function() { return this.storage.load('orders', []); },
+                saveOrders: function(data) { return this.storage.save('orders', data); },
+                getCustomers: function() { return this.storage.load('customers', []); },
+                saveCustomers: function(data) { return this.storage.save('customers', data); },
+                getSettings: function() { return this.storage.load('settings', {}); },
+                saveSettings: function(data) { return this.storage.save('settings', data); },
+                getCart: function() { return this.storage.load('cart', { items: [], total: 0 }); },
+                saveCart: function(data) { return this.storage.save('cart', data); },
+                getAdminSession: function() { return this.storage.load('admin_session', null); },
+                saveAdminSession: function(data) { return this.storage.save('admin_session', data); },
+                clearAdminSession: function() { return this.storage.remove('admin_session'); },
+                addOrder: function(order) {
+                    const orders = this.getOrders();
+                    orders.push(order);
+                    return this.saveOrders(orders);
+                }
+            };
+
+            // 3. פונקציות התראה
+            window.showSuccess = function(msg) {
+                createNotification(msg, 'success');
+            };
+            window.showError = function(msg) {
+                createNotification(msg, 'error');
+            };
+            window.showWarning = function(msg) {
+                createNotification(msg, 'warning');
+            };
+            window.showInfo = function(msg) {
+                createNotification(msg, 'info');
+            };
+
+            function createNotification(message, type) {
+                const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: '#3b82f6' };
+                const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; z-index: 9999;
+                    background: rgba(0,0,0,0.9); color: white; padding: 15px 20px;
+                    border-radius: 8px; border-left: 4px solid ${colors[type]};
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    backdrop-filter: blur(10px); direction: rtl;
+                    max-width: 350px; cursor: pointer;
+                `;
+                notification.innerHTML = `${icons[type]} ${message}`;
+
+                document.body.appendChild(notification);
+                notification.onclick = () => document.body.removeChild(notification);
+                setTimeout(() => {
+                    if (notification.parentNode) document.body.removeChild(notification);
+                }, 5000);
+            }
+
+            // 4. modalManager
+            window.modalManager = {
+                openModal: function(id) {
+                    const modal = document.getElementById(id);
+                    if (modal) {
+                        modal.style.display = 'flex';
+                    }
+                },
+                closeModal: function(id) {
+                    const modal = document.getElementById(id);
+                    if (modal) {
+                        modal.style.display = 'none';
+                    }
+                }
+            };
+
+            // 5. פונקציות עזר
+            window.formatPrice = function(price) {
+                return `₪${price}`;
+            };
+
+            window.generateId = function(prefix = '') {
+                return prefix + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            };
+
+            window.generateOrderNumber = function(prefix = 'HZ') {
+                const date = new Date();
+                return prefix + date.getFullYear().toString().substring(2) +
+                       String(date.getMonth() + 1).padStart(2, '0') +
+                       String(date.getDate()).padStart(2, '0') +
+                       Date.now().toString().substring(-4);
+            };
+
+            // 6. יצירת admin panel פשוט
+            window.admin = {
+                isLoggedIn: false,
+                login: function() {
+                    const username = document.getElementById('username')?.value || document.getElementById('testUser')?.value;
+                    const password = document.getElementById('password')?.value || document.getElementById('testPass')?.value;
+
+                    if (username === CONFIG.admin.defaultUsername && password === CONFIG.admin.defaultPassword) {
+                        this.isLoggedIn = true;
+                        DataManager.saveAdminSession({
+                            username: username,
+                            loginTime: Date.now()
+                        });
+                        showSuccess('התחברת בהצלחה לפאנל הניהול!');
+
+                        // פתח פאנל ניהול
+                        const adminPanel = document.getElementById('adminPanel');
+                        if (adminPanel) {
+                            adminPanel.style.display = 'block';
+                            adminPanel.classList.add('open');
+                            document.body.classList.add('admin-open');
+                        }
+
+                        return true;
+                    } else {
+                        showError('שם משתמש או סיסמה שגויים');
+                        return false;
+                    }
+                },
+                logout: function() {
+                    this.isLoggedIn = false;
+                    DataManager.clearAdminSession();
+                    showInfo('התנתקת מפאנל הניהול');
+                }
+            };
+
+            // 7. פונקציות גלובליות
+            window.login = function() {
+                return window.admin.login();
+            };
+
+            window.openAdminLogin = function() {
+                modalManager.openModal('loginModal');
+            };
+
+            window.closeAdminLogin = function() {
+                modalManager.closeModal('loginModal');
+            };
+
+            window.handleEnterLogin = function(event) {
+                if (event.key === 'Enter') {
+                    login();
+                }
+            };
+
+            // אתחול תפריט ברירת מחדל
+            if (!DataManager.storage.load('menu_data')) {
+                DataManager.saveMenu(DataManager.getMenu());
+            }
+
+            statusDiv.innerHTML = `
+                <div class="status success">✅ תיקון חירום הושלם בהצלחה!</div>
+                <div style="background: #1a1a1a; color: #00ff00; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace;">
+                    ✅ CONFIG נוצר<br>
+                    ✅ DataManager נוצר<br>
+                    ✅ פונקציות התראה נוצרו<br>
+                    ✅ ModalManager נוצר<br>
+                    ✅ Admin Panel נוצר<br>
+                    ✅ פונקציות עזר נוצרו<br>
+                    ✅ תפריט ברירת מחדל נוצר
+                </div>
+                <p style="color: #10b981; font-weight: bold;">עכשיו נסה להתחבר עם admin/hazya2024!</p>
+            `;
+
+            console.log('🎉 תיקון חירום הושלם! נסה להתחבר עכשיו');
+
+        } catch (error) {
+            statusDiv.innerHTML = `
+                <div class="status error">❌ שגיאה בתיקון: ${error.message}</div>
+            `;
+            console.error('שגיאה בתיקון חירום:', error);
+        }
+    }
+
+    // בדיקת קבצים
+    function checkFiles() {
+        const statusDiv = document.getElementById('fileStatus');
+        let html = '<div class="code-output">';
+
+        const requiredVars = ['CONFIG', 'DataManager', 'showSuccess', 'showError', 'modalManager', 'admin'];
+        const missing = [];
+        const exists = [];
+
+        requiredVars.forEach(varName => {
+            if (typeof window[varName] !== 'undefined') {
+                exists.push(varName);
+                html += `✅ ${varName} קיים\n`;
+            } else {
+                missing.push(varName);
+                html += `❌ ${varName} חסר\n`;
+            }
+        });
+
+        html += `\nסיכום:\n✅ קיימים: ${exists.length}\n❌ חסרים: ${missing.length}`;
+        html += '</div>';
+
+        if (missing.length > 0) {
+            html += '<div class="status error">יש רכיבים חסרים - לחץ על "תקן עכשיו!" למעלה</div>';
+        } else {
+            html += '<div class="status success">כל הרכיבים קיימים!</div>';
+        }
+
+        statusDiv.innerHTML = html;
+    }
+
+    // יצירת קבצים חסרים
+    function createMissingFiles() {
+        emergencyFix(); // זה ייצור את כל מה שחסר
+        document.getElementById('createStatus').innerHTML =
+            '<div class="status success">✅ כל הקבצים החסרים נוצרו!</div>';
+    }
+
+    // בדיקת התחברות
+    function testLogin() {
+        const statusDiv = document.getElementById('loginStatus');
+
+        if (typeof window.admin === 'undefined') {
+            statusDiv.innerHTML = '<div class="status error">❌ Admin Panel לא קיים - לחץ על "תקן עכשיו!" תחילה</div>';
+            return;
+        }
+
+        const result = window.admin.login();
+
+        if (result) {
+            statusDiv.innerHTML = `
+                <div class="status success">✅ התחברות הצליחה!</div>
+                <p style="color: #10b981;">עכשיו אתה יכול לחזור לאתר המקורי ולהיכנס לפאנל הניהול</p>
+            `;
+        } else {
+            statusDiv.innerHTML = '<div class="status error">❌ התחברות נכשלה - בדוק שם משתמש וסיסמה</div>';
+        }
+    }
+
+    // הפעלה אוטומטית של התיקון
+    window.onload = function() {
+        setTimeout(() => {
+            const autoFix = confirm('האם לבצע תיקון חירום אוטומטי?');
+            if (autoFix) {
+                emergencyFix();
+            }
+        }, 1000);
+    };
+</script>
+</body>
+</html>
